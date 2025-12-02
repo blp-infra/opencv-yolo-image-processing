@@ -3,14 +3,17 @@ name = "image-processing"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
-    "opentelemetry-exporter-otlp>=1.38.0",
+    "fastapi[standard]>=0.123.2",
+    "opentelemetry-api>=1.38.0",
     "opentelemetry-exporter-otlp-proto-grpc>=1.38.0",
+    "opentelemetry-exporter-prometheus>=0.59b0",
     "opentelemetry-instrumentation>=0.59b0",
+    "opentelemetry-instrumentation-fastapi>=0.59b0",
     "opentelemetry-instrumentation-logging>=0.59b0",
-    "opentelemetry-instrumentation-requests>=0.59b0",
-    "opentelemetry-instrumentation-system-metrics>=0.59b0",
-    "opentelemetry-instrumentation-urllib>=0.59b0",
     "opentelemetry-sdk>=1.38.0",
+    "prometheus-client>=0.23.1",
+    "python-json-logger>=4.0.0",
+    "uvicorn>=0.38.0",
 ]
