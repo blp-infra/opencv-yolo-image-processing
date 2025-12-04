@@ -1,6 +1,13 @@
 version: '3.8'
 
 services:
+  fastapi: 
+    build: .
+    container_name: fastapi
+    ports:
+     -  "8000:8000"
+    networks: 
+      - observability
   # Elasticsearch for logs
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
