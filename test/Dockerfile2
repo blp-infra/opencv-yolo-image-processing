@@ -1,0 +1,18 @@
+# Use your existing image as the base
+FROM qms_6.3:def
+
+# Set working directory
+WORKDIR /app
+
+# Copy your Python script into the container
+COPY script.py /app/script.py
+
+# Install Python if not present OR install required packages
+# (Uncomment the following block if your base image does NOT have python)
+# RUN yum install -y python3 || apt-get update && apt-get install -y python3
+
+# Expose the required port
+EXPOSE 8000
+
+# Set entrypoint to run the python script
+ENTRYPOINT ["python3", "/app/script.py"]
