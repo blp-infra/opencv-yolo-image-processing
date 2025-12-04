@@ -9,7 +9,6 @@ COPY requirements.txt /app/requirements.txt
 COPY script.py /app/script.py
 
 # Install Python if not present OR install required packages
-# (Uncomment the following block if your base image does NOT have python)
 RUN apt-get update && apt-get install -y python3
 RUN pip3 install --no-cache-dir -r requirements.txt
 
