@@ -1,0 +1,61 @@
+# ============================================================
+#   DEEPSTREAM PEOPLE DETECT TEST  —  docker-compose.yml
+# ============================================================
+version: "3.9"
+
+services:
+  # ── RabbitMQ broker ────────────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # AMQP
+      - "15672:15672" # Management UI  →  http://localhost:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # ── People-detection app ───────────────────────────────────
+  people-detector:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: people-detector
+    image: deepstream-people-detect-test:latest
+
+    # ── GPU access ────────────────────────────────────────────
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # (alternative for older compose / Docker versions:)
+    # runtime: nvidia
+
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+    environment:
+      VIDEO_PATH: "/app/video/queue.mp4"
+      RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672/"
+      RABBITMQ_QUEUE: "people_count"
+      SEND_INTERVAL_SEC: "5" # publish every N seconds
+      CONFIDENCE_THRESHOLD: "0.45"
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,video,utility
+
+    volumes:
+      # Mount a local video file without rebuilding the image:
+      # - ./my_queue_video.mp4:/app/video/queue.mp4:ro
+      []
+
+    restart: unless-stopped
